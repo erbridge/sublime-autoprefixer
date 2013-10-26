@@ -18,11 +18,11 @@ class AutoprefixerCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		if not self.is_css() and not self.is_unsaved_buffer_without_syntax():
 			return
-		self.browsers = ','.join(self.get_setting('browsers'))
+		browsers = ','.join(self.get_setting('browsers'))
 		if not self.has_selection():
 			region = sublime.Region(0, self.view.size())
 			originalBuffer = self.view.substr(region)
-			prefixed = self.prefix(originalBuffer)
+			prefixed = self.prefix(originalBuffer, browsers)
 			if prefixed:
 				self.view.replace(edit, region, prefixed)
 			return
@@ -30,13 +30,13 @@ class AutoprefixerCommand(sublime_plugin.TextCommand):
 			if region.empty():
 				continue
 			originalBuffer = self.view.substr(region)
-			prefixed = self.prefix(originalBuffer)
+			prefixed = self.prefix(originalBuffer, browsers)
 			if prefixed:
 				self.view.replace(edit, region, prefixed)
 
-	def prefix(self, data):
+	def prefix(self, data, browsers):
 		try:
-			return node_bridge(data, BIN_PATH, [self.browsers])
+			return node_bridge(data, BIN_PATH, [browsers])
 		except Exception as e:
 			sublime.error_message('Autoprefixer\n%s' % e)
 

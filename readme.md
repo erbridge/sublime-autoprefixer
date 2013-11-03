@@ -13,7 +13,7 @@ Adding prefixes manually is a chore. It's also hard to keep track of where and w
 
 Install `Autoprefixer` with [Package Control](https://sublime.wbond.net) and restart Sublime.
 
-**You need to have [Node.js](http://nodejs.org) installed.**  
+**You need to have [Node.js](http://nodejs.org) installed.**
 Make sure it's in your $PATH by running `node -v` in your command-line.
 
 
@@ -82,15 +82,16 @@ Example:
 
 ### Project settings
 
-You can override the default and user settings for individual projects. Just add an `"Autoprefixer"` object to the `"settings"` object in the project's `.sublime-project` file containing your project specific settings.
+You can override the default and user settings for individual projects. Just add an `"Autoprefixer"` object to the `"settings"` object in the project's `.sublime-project` file containing your [project specific settings](http://www.sublimetext.com/docs/3/projects.html).
 
 Example:
 
 ```json
 {
-	"Autoprefixer":
-	{
-		"browser": ["last 1 version", "> 10%", "ie 8", "ie 7"]
+	"settings": {
+		"Autoprefixer": {
+			"browsers": ["last 1 version"]
+		}
 	}
 }
 ```
@@ -98,4 +99,4 @@ Example:
 
 ## License
 
-MIT License • © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](http://sindresorhus.com)

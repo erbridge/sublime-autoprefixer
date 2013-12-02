@@ -19,36 +19,24 @@ class AutoprefixerCommand(sublime_plugin.TextCommand):
 		if not self.is_css() and not self.is_unsaved_buffer_without_syntax():
 			return
 		browsers = ','.join(self.get_setting('browsers'))
-		if not self.has_selection():
-			region = sublime.Region(0, self.view.size())
-			originalBuffer = self.view.substr(region)
-			prefixed = self.prefix(originalBuffer, browsers)
-			if prefixed:
-				self.view.replace(edit, region, prefixed)
-			return
+		has_selection = False
 		for region in self.view.sel():
 			if region.empty():
 				continue
-			originalBuffer = self.view.substr(region)
-			prefixed = self.prefix(originalBuffer, browsers)
-			if prefixed:
-				self.view.replace(edit, region, prefixed)
+			has_selection = True
+			self.prefix(region, browsers)
+		if not has_selection:
+			self.prefix(sublime.Region(0, self.view.size()), browsers)
 
-	def prefix(self, data, browsers):
+	def prefix(self, region, browsers):
 		try:
-			return node_bridge(data, BIN_PATH, [browsers])
+			if node_bridge(self.view.substr(region), BIN_PATH, [browsers]):
+				self.view.replace(edit, region, prefixed)
 		except Exception as e:
 			sublime.error_message('Autoprefixer\n%s' % e)
 
-	def has_selection(self):
-		for sel in self.view.sel():
-			start, end = sel
-			if start != end:
-				return True
-		return False
-
 	def is_unsaved_buffer_without_syntax(self):
-		return self.view.file_name() == None and self.is_plaintext() == True
+		return self.view.file_name() is None and self.is_plaintext()
 
 	def is_plaintext(self):
 		return self.view.settings().get('syntax') == 'Packages/Text/Plain text.tmLanguage'
